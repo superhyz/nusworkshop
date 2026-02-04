@@ -1,12 +1,24 @@
 services:
   backend:
     build:
-      context: .
-      dockerfile: llmapp04-main/llm-multiroute/Dockerfile
+      # Context is the specific subfolder containing the backend code
+      context: ./llmapp04-main/llm-multiroute
+      dockerfile: Dockerfile
     container_name: llm_backend
     ports:
       - "8082:8082"
-    volumes:
-      - ./llmapp04-main/llm-multiroute/app:/app/app
+    environment:
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
     restart: always
 
+  frontend:
+    build:
+      # Context is the specific subfolder containing the frontend code
+      context: ./llmapp04-main/llm-frontend-python
+      dockerfile: Dockerfile
+    container_name: llm_frontend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+    restart: always
